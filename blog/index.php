@@ -30,7 +30,7 @@
         </p>
 
         <div class="d-grid gap-2 d-md-flex justify-content-center justify-content-lg-start">
-          <a href="posts.php" class="btn btn-primary btn-lg px-4 me-md-2 shadow-sm">Read Articles</a>
+          <a href="blog.php" class="btn btn-primary btn-lg px-4 me-md-2 shadow-sm">Read Articles</a>
           <a href="contact.php" class="btn btn-outline-secondary btn-lg px-4 shadow-sm">Get in Touch</a>
         </div>
       </div>
