@@ -8,48 +8,24 @@ if ($_SESSION['isLogin'] !== true) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
     <?php include 'include/navbar.php'; ?>
-
     <div class="container my-5">
         <div class="row">
-            <div class="col-lg-3">
-                <ul class="list-group">
-                    <a href="dashboard.php" class="list-group-item list-group-item-action active">
-                        Dashboard
-                    </a>
-
-                    <a href="list-category.php" class="list-group-item list-group-item-action">
-                        Categories
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Posts
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Users
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Comments
-                    </a>
-
-                    <a href="logout.php" class="list-group-item list-group-item-action">
-                        Logout
-                    </a>
-                </ul>
-            </div>
+            <?php include 'include/sidebar.php'; ?>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>

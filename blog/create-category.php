@@ -1,99 +1,107 @@
 <?php
-require 'connection.php';
 session_start();
-if ($_SESSION['isLogin'] !== true) {
+require 'connection.php';
+
+if (!isset($_SESSION['isLogin']) == true) {
     header("Location: login.php");
+    exit;
 }
 
 if (isset($_POST['save'])) {
+
     $name  = $_POST['name'];
     $slug  = $_POST['slug'];
 
-    if (empty($name) && empty($slug)) {
-        $message = 'All fields are reuired';
+    if (empty($name) || empty($slug) || $_FILES['image']['error'] == 4) {
+        $message = "All Fields Required";
         $messageType = 'danger';
-    }else{
-        $sql = "INSERT INTO categories (name, slug, image) VALUES('$name', '$slug', null)";
-        if(mysqli_query($conn, $sql)===TRUE){
-            $message = 'Category Created Successfully.';
-            $messageType = 'success';
+    } else {
+
+        // IMAGE UPLOAD
+        $imageName = time() . "_" . basename($_FILES['image']['name']);
+        $target_dir = "uploads/category/";
+        $target_file = $target_dir . $imageName;
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+
+            $sql = "INSERT INTO categories (name, slug, image)
+                    VALUES ('$name', '$slug', '$imageName')";
+
+            if (mysqli_query($conn, $sql) === TRUE) {
+                $message = "Category Created Successfully.";
+                $messageType = 'success';
+            } else {
+                $message = "Database Error";
+                $messageType = 'danger';
+            }
+        } else {
+            $message = "Image upload failed";
+            $messageType = 'danger';
         }
     }
 }
+// Close DB connection
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Category</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
+
     <?php include 'include/navbar.php'; ?>
 
     <div class="container my-5">
         <div class="row">
-            <div class="col-lg-3">
-                <ul class="list-group">
-                    <a href="dashboard.php" class="list-group-item list-group-item-action">
-                        Dashboard
-                    </a>
-
-                    <a href="list-category.php" class="list-group-item list-group-item-action active">
-                        Categories
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Posts
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Users
-                    </a>
-                    
-                    <a href="" class="list-group-item list-group-item-action">
-                        Comments
-                    </a>
-
-                    <a href="logout.php" class="list-group-item list-group-item-action">
-                        Logout
-                    </a>
-                </ul>
-            </div>
+            <?php include 'include/sidebar.php'; ?>
             <div class="col-lg-9">
-                <a href="list-category.php" class="btn btn-primary">All Category</a>
-                <?php if(!empty($message)){ ?>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h3>Create Category</h3>
+                    <a href="list-category.php" class="btn btn-primary">All Category</a>
+                </div>
+
+                <?php if (!empty($message)) { ?>
                     <div class="alert alert-<?= $messageType ?>">
                         <?= $message ?>
                     </div>
                 <?php } ?>
-                <div class="card mt-3">
+
+                <div class="card">
                     <div class="card-body">
-                        <form action="create-category.php" method="post">
+                        <form action="create-category.php" method="post" enctype="multipart/form-data">
+
                             <div class="mb-3">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" class="form-control">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="name" placeholder="Category Name">
                             </div>
 
                             <div class="mb-3">
-                                <label for="slug">Slug</label>
-                                <input type="text" name="slug" class="form-control">
+                                <label>Slug</label>
+                                <input type="text" class="form-control" name="slug" placeholder="Category Slug">
                             </div>
 
                             <div class="mb-3">
-                                <label for="image">Image</label>
-                                <input type="file" name="image" class="form-control">
+                                <label>Image</label>
+                                <input type="file" class="form-control" name="image">
                             </div>
-                            <button type="submit" name="save" class="btn btn-success">Save</button>
+
+                            <input type="submit" value="Save" class="btn btn-primary" name="save">
+
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
